@@ -16,6 +16,7 @@ series, a running notebook.
 | [Token Bucket Rate Limiter](patterns/token_bucket_rate_limiter.md) | Limiting request rate per client while allowing short bursts |
 | [Cursor-Based Pagination](patterns/cursor_pagination.md) | Paginating large/changing datasets without the "shifting page" bug of offset pagination |
 | [Circuit Breaker](patterns/circuit_breaker.md) | Stopping a failing downstream dependency from taking the whole system down with it |
+| [Sharding](patterns/sharding.md) | Splitting a workload too big for one worker into parallel, independent slices |
 
 ## License
 MIT — see [LICENSE](LICENSE)
