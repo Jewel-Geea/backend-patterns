@@ -6,6 +6,14 @@ quarter of the time, as long as no section is a lot bigger than the others. Shar
 that idea applied to any workload too big for one worker: split it into N independent
 slices and run them in parallel.
 
+**Where I ran into this:** an Appium mobile test suite running serially on one emulator
+started failing intermittently as the suite grew — not real bugs, just the single runner
+buckling under load and producing flaky, inconsistent results. Splitting the same suite
+into shards running on separate runners in parallel didn't just make it faster; each
+shard carried a lighter, more predictable load, and the flakiness disappeared. A good
+reminder that sharding isn't only a throughput fix — an overloaded single worker can
+degrade in ways that look like bugs, and spreading the load out fixes both problems at once.
+
 **Problem:** a single worker — a database, a CI runner, a batch job — is handling
 everything serially, and the work keeps growing. Eventually one worker isn't enough:
 either it can't hold all the data, or it takes too long to get through all the work in
