@@ -1,5 +1,10 @@
 # Idempotency Keys
 
+**TL;DR:** like a restaurant order ticket number — if the waiter comes back and says
+"did you already order this?", they check the ticket instead of just cooking a second
+plate. The key lets the server recognize "I've seen this exact request before" instead of
+executing it twice.
+
 **Problem:** a client calls `POST /payments`, the request succeeds, but the response gets
 lost (timeout, dropped connection). The client retries. Without protection, the payment
 gets charged twice.
@@ -7,6 +12,17 @@ gets charged twice.
 **Fix:** the client generates a unique key per *logical* operation (not per HTTP attempt)
 and sends it in a header. The server remembers the result for that key and, on a retry,
 replays the stored response instead of re-executing the operation.
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Server
+    Client->>Server: POST /payments (Idempotency-Key: abc123)
+    Note over Server: connection drops before response arrives
+    Client->>Server: retries POST /payments (Idempotency-Key: abc123)
+    Note over Server: key already seen -> replay stored result
+    Server-->>Client: 201 Created (same charge, not a new one)
+```
 
 ```python
 import hashlib

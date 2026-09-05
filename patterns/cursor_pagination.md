@@ -1,5 +1,10 @@
 # Cursor-Based Pagination
 
+**TL;DR:** a cursor is a bookmark, not a page number. "Give me the 20 rows after this
+bookmark" stays correct even if rows get added or removed elsewhere in the book. "Give me
+page 3" breaks the moment the book's contents shift, because page 3 doesn't mean the same
+thing anymore.
+
 **Problem:** offset pagination (`LIMIT 20 OFFSET 40`) breaks when rows are inserted or
 deleted between page requests — a row can shift from page 3 to page 2 mid-scroll, so the
 client either sees it twice or misses it entirely. It also gets slower on large tables,
@@ -8,6 +13,17 @@ since the database still has to scan and discard every skipped row.
 **Fix:** instead of an offset, the client passes an opaque cursor derived from the last
 row it saw. The next page is a `WHERE` clause anchored on that cursor, which stays stable
 regardless of concurrent inserts/deletes elsewhere in the table.
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Server
+    Client->>Server: GET /orders (no cursor)
+    Server-->>Client: 20 items + next_cursor="c1"
+    Note over Server: a new order is inserted here
+    Client->>Server: GET /orders?cursor=c1
+    Server-->>Client: next 20 items after c1 (unaffected by the insert)
+```
 
 ```python
 import base64

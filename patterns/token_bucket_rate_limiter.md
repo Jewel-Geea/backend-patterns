@@ -1,5 +1,10 @@
 # Token Bucket Rate Limiter
 
+**TL;DR:** think of a bucket that holds a fixed number of tokens and slowly refills, drip
+by drip. Every request spends a token. If the bucket's empty, you have to wait for it to
+refill. You can spend a burst of saved-up tokens all at once, but you can never out-spend
+the refill rate for long.
+
 **Problem:** you need to cap how many requests a client can make per second/minute, but a
 hard "N requests per fixed window" limiter unfairly rejects bursts even when the client's
 average rate is well within budget (and it has a bad edge case at window boundaries, where
@@ -9,6 +14,13 @@ a client can send 2x the limit by timing requests around the window reset).
 `refill_rate` tokens/second. A request costs one token; if the bucket is empty, the
 request is rejected (or queued). This allows short bursts up to `capacity` while
 enforcing the average rate over time.
+
+```mermaid
+graph LR
+    A["Bucket: 20/20 tokens"] -->|"5 req burst (-5)"| B["15/20 tokens"]
+    B -->|"refills +5/s"| C["20/20 tokens after 1s"]
+    C -->|"25 req burst"| D["0/20 tokens, 5 requests rejected (429)"]
+```
 
 ```python
 import time

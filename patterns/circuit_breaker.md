@@ -1,5 +1,10 @@
 # Circuit Breaker
 
+**TL;DR:** if a household appliance keeps short-circuiting, the breaker in your fuse box
+trips and cuts power to it — instead of letting it keep drawing current and starting a
+fire. Same idea for a failing dependency: stop calling it for a while instead of letting
+it take your service down too.
+
 **Problem:** a downstream dependency (a third-party API, a slow DB replica) starts
 failing or timing out. Without protection, every incoming request still tries to call it,
 piles up waiting on the timeout, and exhausts your own thread/connection pool — a single
@@ -9,6 +14,15 @@ failing dependency takes down the whole service.
 circuit: fail fast immediately (no network call) for a cooldown period. After the cooldown,
 allow a single trial request through ("half-open") — if it succeeds, close the circuit and
 resume normal traffic; if it fails, reopen it and restart the cooldown.
+
+```mermaid
+stateDiagram-v2
+    [*] --> CLOSED
+    CLOSED --> OPEN: failures >= threshold
+    OPEN --> HALF_OPEN: cooldown elapsed
+    HALF_OPEN --> CLOSED: trial request succeeds
+    HALF_OPEN --> OPEN: trial request fails
+```
 
 ```python
 import time
