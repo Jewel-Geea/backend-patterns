@@ -15,5 +15,13 @@ series, a running notebook.
 | [Sharding](patterns/sharding.md) | Splitting a workload too big for one worker into parallel, independent slices |
 | [Vertical vs. Horizontal Scaling](patterns/scaling.md) | Adding capacity by upgrading one server vs. adding more of them |
 
+## Log
+A short diary of each session — the point isn't the content, it's keeping the streak of
+showing up going.
+
+- **2026-09-06** — Added Vertical vs. Horizontal Scaling, from Frank Kane's *Mastering the
+  System Design Interview* (Udemy). First log entry — starting the habit of noting a line
+  here every time a pattern gets added.
+
 ## License
 MIT — see [LICENSE](LICENSE)
