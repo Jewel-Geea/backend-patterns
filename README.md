@@ -13,6 +13,7 @@ series, a running notebook.
 | Pattern | What it solves |
 |---|---|
 | [Sharding](patterns/sharding.md) | Splitting a workload too big for one worker into parallel, independent slices |
+| [Vertical vs. Horizontal Scaling](patterns/scaling.md) | Adding capacity by upgrading one server vs. adding more of them |
 
 ## License
 MIT — see [LICENSE](LICENSE)
