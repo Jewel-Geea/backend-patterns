@@ -22,6 +22,8 @@ showing up going.
 - **2026-09-06** — Added Vertical vs. Horizontal Scaling, from Frank Kane's *Mastering the
   System Design Interview* (Udemy). First log entry — starting the habit of noting a line
   here every time a pattern gets added.
+- **2026-09-07** — Worked on Appium authentication code; the device got too heavy and got
+  stuck, so testing it stalled. Picking it back up tomorrow.
 
 ## License
 MIT — see [LICENSE](LICENSE)
