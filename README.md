@@ -16,6 +16,15 @@ series, a running notebook.
 | [Vertical vs. Horizontal Scaling](patterns/scaling.md) | Adding capacity by upgrading one server vs. adding more of them |
 | [Flaky Test Root Causes](patterns/flaky-test-root-causes.md) | Diagnosing intermittent E2E/UI test failures instead of retrying past them |
 
+## Setup
+This repo is personal — commits and pushes should only ever go out under my personal
+GitHub account, never a work identity. A pre-push hook enforces that (checks
+`git config user.email` and the active `gh` account, and refuses to push otherwise). It's
+not enabled by default on a fresh clone — activate it once with:
+```
+git config core.hooksPath .githooks
+```
+
 ## Log
 A short diary of each session — the point isn't the content, it's keeping the streak of
 showing up going.
