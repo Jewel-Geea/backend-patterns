@@ -14,6 +14,7 @@ series, a running notebook.
 |---|---|
 | [Sharding](patterns/sharding.md) | Splitting a workload too big for one worker into parallel, independent slices |
 | [Vertical vs. Horizontal Scaling](patterns/scaling.md) | Adding capacity by upgrading one server vs. adding more of them |
+| [Flaky Test Root Causes](patterns/flaky-test-root-causes.md) | Diagnosing intermittent E2E/UI test failures instead of retrying past them |
 
 ## Log
 A short diary of each session — the point isn't the content, it's keeping the streak of
@@ -25,7 +26,10 @@ showing up going.
 - **2026-09-07** — Worked on Appium authentication code; the device got too heavy and got
   stuck, so testing it stalled. Picking it back up tomorrow.
 - **2026-09-08** — Added a real-world case study to Sharding: replacing a fixed shard
-  count with duration-based dynamic shard planning in a CI regression suite.
+  count with duration-based dynamic shard planning in a CI regression suite. Also added a
+  new pattern, Flaky Test Root Causes, distilled from a day of review fixes across six
+  PRs — race conditions, unstable locators, false-confidence assertions, silent retries,
+  and shared-state pollution.
 
 ## License
 MIT — see [LICENSE](LICENSE)
