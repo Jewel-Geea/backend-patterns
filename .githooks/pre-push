@@ -1,25 +1,33 @@
 #!/bin/sh
 # Refuse to push from this repo unless the local git identity and the active
 # `gh` account are both the personal account. Prevents accidentally pushing
-# personal notes under the work (Edstem) identity.
+# personal notes under the work identity. Reads the expected identity from
+# git config (hooks.personal-email / hooks.personal-gh-user) instead of
+# hardcoding it here, since this file is tracked and this repo is public.
 
-expected_email="<redacted-personal-email>"
-expected_gh_user="<redacted-personal-gh-user>"
+expected_email=$(git config --get hooks.personal-email)
+expected_gh_user=$(git config --get hooks.personal-gh-user)
+
+if [ -z "$expected_email" ]; then
+  echo "pre-push: refusing to push -- hooks.personal-email is not configured." >&2
+  echo "Fix: git config --global hooks.personal-email <your-personal-email>" >&2
+  exit 1
+fi
 
 current_email=$(git config user.email)
 if [ "$current_email" != "$expected_email" ]; then
   echo "pre-push: refusing to push -- git user.email is '$current_email'," >&2
-  echo "expected '$expected_email' (personal account only)." >&2
-  echo "Fix: git config user.email $expected_email" >&2
+  echo "expected the personal account configured in hooks.personal-email." >&2
+  echo "Fix: git config user.email <your-personal-email>" >&2
   exit 1
 fi
 
-if command -v gh >/dev/null 2>&1; then
+if [ -n "$expected_gh_user" ] && command -v gh >/dev/null 2>&1; then
   active_gh_user=$(gh api user -q .login 2>/dev/null)
   if [ -n "$active_gh_user" ] && [ "$active_gh_user" != "$expected_gh_user" ]; then
     echo "pre-push: refusing to push -- active gh account is '$active_gh_user'," >&2
-    echo "expected '$expected_gh_user' (personal account only)." >&2
-    echo "Fix: gh auth switch --hostname github.com --user $expected_gh_user" >&2
+    echo "expected the personal account configured in hooks.personal-gh-user." >&2
+    echo "Fix: gh auth switch --hostname github.com --user <your-personal-gh-user>" >&2
     exit 1
   fi
 fi

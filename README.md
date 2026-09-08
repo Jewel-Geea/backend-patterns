@@ -19,10 +19,14 @@ series, a running notebook.
 ## Setup
 This repo is personal — commits and pushes should only ever go out under my personal
 GitHub account, never a work identity. A pre-push hook enforces that (checks
-`git config user.email` and the active `gh` account, and refuses to push otherwise). It's
-not enabled by default on a fresh clone — activate it once with:
+`git config user.email` and the active `gh` account, and refuses to push otherwise). The
+expected identity is never hardcoded in this repo — it's read from git config, so it's
+never a public file's content. Not enabled by default on a fresh clone — activate it once
+with:
 ```
 git config core.hooksPath .githooks
+git config --global hooks.personal-email <your-personal-email>
+git config --global hooks.personal-gh-user <your-personal-github-username>
 ```
 
 ## Log
