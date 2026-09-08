@@ -96,3 +96,45 @@ def split_into_shards(items: list, shard_count: int) -> list[list]:
 - If most operations need to touch data across many shards anyway (heavy joins/aggregations
   spanning keys), sharding adds coordination cost without removing the bottleneck — look at
   read replicas, caching, or a bigger single node first.
+
+## Case study: duration-based dynamic sharding
+A real run-in with the "uneven shards" hazard above, on a UI/E2E regression suite's CI.
+Specs were split across a **fixed** shard count — a hand-set constant, re-tuned manually
+every time someone noticed the suite had grown (count the new spec files, bump the
+constant, re-derive the timeout by hand).
+
+That breaks because splitting by file count assumes every spec costs about the same to
+run. In a regression suite, spec duration is wildly uneven — a smoke check that just
+asserts a screen renders takes a few seconds; a full checkout-and-payment flow that seeds
+data through the backend and waits out async state can take minutes. Bin specs by count
+instead of duration and shards end up with wildly different actual runtimes. Wall-clock
+for the whole job is bounded by the slowest shard, not the average, so a handful of
+expensive specs landing on the same shard by bad luck can double the job's runtime while
+every other shard finishes early and sits idle. There's no fixed number that's
+simultaneously fast and cheap, because the workload isn't uniform and a constant can't see
+that — over-provision shards "just in case" and you burn CI cost on idle time;
+under-provision and the slowest shard becomes the bottleneck, so the timeout has to be
+padded to survive it.
+
+The fix replaced the constant with a plan computed at runtime:
+1. **Measure real cost, not file count.** A reporter records each spec file's wall-clock
+   duration on every run, persisted as an artifact — ground truth for what each spec
+   actually costs, instead of assuming they're interchangeable.
+2. **Plan shards from that history.** A planning step reads the duration history and
+   computes the shard count at runtime (clamped between a configured floor and ceiling),
+   then bin-packs specs across shards by duration — so no shard ends up disproportionately
+   loaded just because it drew the slowest specs.
+3. **Derive the timeout from the plan actually chosen**, instead of a number a human
+   re-derives by hand every time the suite's shape changes.
+4. **Skip work a change couldn't affect.** On pull requests, map changed files to the
+   specs whose import graph actually reaches them and run only those, falling back to the
+   full suite for anything that could affect every spec (CI config, shared tooling,
+   lockfile changes) — so "run everything on every PR" stops being the default cost for a
+   change that only touched one screen's worth of tests.
+5. **Degrade gracefully on a cold start.** With no duration history yet, fall back to an
+   even split rather than failing on day one or on a fresh branch with no history.
+
+Net effect: the pipeline moved from "a human periodically retunes a magic number and hopes
+it's still right" to "the system measures itself and rebalances every run" — because the
+workload is non-uniform and keeps changing shape, no single static number is ever optimal
+for long, so the fix is to stop trying to pick one and compute it fresh each run instead.

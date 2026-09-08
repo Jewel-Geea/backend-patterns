@@ -24,6 +24,8 @@ showing up going.
   here every time a pattern gets added.
 - **2026-09-07** — Worked on Appium authentication code; the device got too heavy and got
   stuck, so testing it stalled. Picking it back up tomorrow.
+- **2026-09-08** — Added a real-world case study to Sharding: replacing a fixed shard
+  count with duration-based dynamic shard planning in a CI regression suite.
 
 ## License
 MIT — see [LICENSE](LICENSE)
