@@ -138,3 +138,10 @@ Net effect: the pipeline moved from "a human periodically retunes a magic number
 it's still right" to "the system measures itself and rebalances every run" — because the
 workload is non-uniform and keeps changing shape, no single static number is ever optimal
 for long, so the fix is to stop trying to pick one and compute it fresh each run instead.
+
+**Follow-up:** the experimental higher shard floor mentioned above shipped — the daily run
+now fans out across roughly 10-15 parallel shards instead of the smaller floor it started
+with. Confirms the same point from a different angle: once shard count is a computed
+parameter instead of a hand-set constant, raising the floor is a one-line experiment
+instead of a re-plumbing exercise, and the right number turned out to be "more than
+anyone would have hand-picked."

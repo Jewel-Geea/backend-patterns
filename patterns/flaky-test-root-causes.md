@@ -49,7 +49,14 @@ generic label) breaks the moment a second element shares that text — or matche
 one silently instead of failing loudly. Anchor on the most specific stable identifier
 available (a `testID`, a unique control), and when text is unavoidable, match the most
 specific text on screen (a subtitle, a field label) rather than something reused across
-screens.
+screens. Two real instances of this: a tap on a repeated list-item card, and a tap on a
+generically-labeled "open detail" button — both were flaking because the locator matched
+whichever matching element happened to render first, not necessarily the right one.
+
+Sometimes this isn't fixable from the test side at all — the screen simply doesn't expose
+a stable identifier for the element you need. When that's the case, the fix is to ask
+whoever owns that screen to add one (a `testID`), not to keep tightening a text-based
+locator that will break again the next time the copy changes.
 
 **Unverified starting state.** A scenario that assumes the state a previous step or a
 previous test left behind is one code change away from silently testing nothing. Make the
@@ -87,6 +94,13 @@ unrelated test runs next and happens to notice the leftover junk. Two habits pre
 send the minimal mutation the scenario actually needs (a request that only touches the
 field it's testing is less likely to have a side effect worth cleaning up), and clean up
 anything a scenario creates in shared state before it ends.
+
+**Bonus: capture more than a pass/fail on failure.** None of the six causes above are
+faster to diagnose than they are to see. Have the runner grab a screenshot and a page
+snapshot automatically whenever a test fails — instead of guessing which of the six
+causes applies from a stack trace alone, you can look at the actual screen/DOM state at
+the moment it failed. This doesn't fix flakiness by itself, but it collapses the time
+between "a test failed" and "I know which of the causes above this is."
 
 ## Hazards worth knowing before you ship this
 - **Not everything intermittent is a test problem.** A failure that recurs consistently

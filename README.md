@@ -43,6 +43,11 @@ showing up going.
   new pattern, Flaky Test Root Causes, distilled from a day of review fixes across six
   PRs — race conditions, unstable locators, false-confidence assertions, silent retries,
   and shared-state pollution.
+- **2026-09-09** — Busy day: 6 merged, new coverage added, 4 previously-broken tests
+  confirmed fixed, two flaky UI interactions tracked down. Extended Sharding with the
+  shard-floor experiment's real result, and Flaky Test Root Causes with two more locator
+  fixes plus a note on capturing failure artifacts (screenshot + snapshot) to diagnose
+  failures faster.
 
 ## License
 MIT — see [LICENSE](LICENSE)
