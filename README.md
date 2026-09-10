@@ -15,6 +15,7 @@ series, a running notebook.
 | [Sharding](patterns/sharding.md) | Splitting a workload too big for one worker into parallel, independent slices |
 | [Vertical vs. Horizontal Scaling](patterns/scaling.md) | Adding capacity by upgrading one server vs. adding more of them |
 | [Flaky Test Root Causes](patterns/flaky-test-root-causes.md) | Diagnosing intermittent E2E/UI test failures instead of retrying past them |
+| [Proactive Locator Auditing](patterns/proactive-locator-auditing.md) | Finding locator gaps across a whole screen module before a test ever runs against them |
 
 ## Setup
 This repo is personal — commits and pushes should only ever go out under my personal
@@ -48,6 +49,10 @@ showing up going.
   shard-floor experiment's real result, and Flaky Test Root Causes with two more locator
   fixes plus a note on capturing failure artifacts (screenshot + snapshot) to diagnose
   failures faster.
+- **2026-09-10** — Heavy day: 7 merged, 3 more open for review, a new proactive
+  locator-audit tool shipped (and then fixed after it under-reported gaps). Added a new
+  pattern, Proactive Locator Auditing, and extended Flaky Test Root Causes with two new
+  hazards: infra outages and stale specs both look like flaky tests but aren't.
 
 ## License
 MIT — see [LICENSE](LICENSE)

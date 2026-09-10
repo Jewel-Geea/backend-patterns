@@ -58,6 +58,10 @@ a stable identifier for the element you need. When that's the case, the fix is t
 whoever owns that screen to add one (a `testID`), not to keep tightening a text-based
 locator that will break again the next time the copy changes.
 
+Finding these one spec at a time is slow and leaves gaps you only discover when a test
+breaks — see [Proactive Locator Auditing](proactive-locator-auditing.md) for finding them
+before that happens.
+
 **Unverified starting state.** A scenario that assumes the state a previous step or a
 previous test left behind is one code change away from silently testing nothing. Make the
 test re-establish the state it needs explicitly (re-enter the screen, re-seed the data it
@@ -115,6 +119,16 @@ between "a test failed" and "I know which of the causes above this is."
   condition, or a broader locator after an unstable one, often makes the test pass again
   in CI while leaving the actual gap (a missing explicit wait, a non-unique match) intact
   for the next similar test to hit.
+- **An infra outage isn't a flaky test either.** A dependency (a backend deploy, a shared
+  environment) being briefly unavailable produces the same red run as any of the six
+  causes above, but the fix is neither a retry nor a root-cause hunt in the test — it's
+  recognizing the window and attributing the failure to the outage, not the suite. Treating
+  every red run as "the test's fault" trains the same "probably flaky, ignore it" reflex
+  the whole point of this list is to avoid.
+- **A spec that asserts removed behavior isn't flaky — it's stale.** When a product
+  deliberately changes or removes a behavior, any spec still asserting the old behavior
+  will fail consistently, not intermittently, and no amount of locator or timing fixes
+  will make it pass again. That's a signal to update or delete the spec, not debug it.
 
 ## When to use it
 - A test fails intermittently with no corresponding code change — work through this list
