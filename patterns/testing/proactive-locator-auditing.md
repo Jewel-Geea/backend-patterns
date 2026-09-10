@@ -49,7 +49,7 @@ async function auditScreenModule(screens: ScreenLocatorMap): Promise<AuditReport
 
 **Where I ran into this:** the first version walked every screen in one process, and once
 the app had enough modules that started to matter — waiting on one machine to plod through
-everything serially felt like exactly the mistake [Sharding](sharding.md) already warns
+everything serially felt like exactly the mistake [Sharding](../scaling/sharding.md) already warns
 about. So instead of one job walking the whole app, I split it by module and kicked off a
 `gh run` per machine — one module per worker instead of one worker doing all of them in
 sequence. Two modules on two machines finishes in roughly the time of the slower one
