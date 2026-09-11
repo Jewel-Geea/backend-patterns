@@ -78,7 +78,7 @@ showing up going.
   hazards: infra outages and stale specs both look like flaky tests but aren't.
 - **2026-09-10** — Restructured the repo into categories (Scaling & Distribution, Test
   Reliability) with a visual map, since a flat table and wall of text wasn't doing the
-  content justice.
+  content justice..
 
 ## License
 MIT — see [LICENSE](LICENSE)
